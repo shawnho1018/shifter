@@ -1,0 +1,7 @@
+steps:
+- name: build-linux-amd64
+  env:
+  - 'GOOS=linux'
+  - 'GOARCH=amd64'
+  - 'GOFLAGS=-ldflags '-linkmode external -extldflags "-static"''
+  args: ['go', 'build']
