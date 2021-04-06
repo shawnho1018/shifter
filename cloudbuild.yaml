@@ -3,5 +3,4 @@ steps:
   env:
   - 'GOOS=linux'
   - 'GOARCH=amd64'
-  - 'GOFLAGS=-ldflags '-linkmode external -extldflags "-static"''
   args: ['go', 'build']
