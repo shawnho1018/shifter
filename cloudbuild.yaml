@@ -1,5 +1,5 @@
 steps:
-- name: build-linux-amd64
+- name: golang
   env:
   - 'GOOS=linux'
   - 'GOARCH=amd64'
