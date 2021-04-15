@@ -3,9 +3,13 @@ There are two shell scripts to demonstrate PV migration flow.
 
 ## Pre-requisite
 Please prepare two GKE clusters using [this guide](https://cloud.google.com/kubernetes-engine/docs/how-to/persistent-volumes/gce-pd-csi-driver). Be sure to have this option, --addons=GcePersistentDiskCsiDriver, enabled. Once the clusters are created, using the following command to check if there is a standard-rwo storageclass with pd.csi.storage.gke.io as its PROVISIONER. 
-```
+<pre>
 kubectl get sc
-``` 
+NAME                 PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+premium-rwo          pd.csi.storage.gke.io   Delete          WaitForFirstConsumer   true                   92m
+standard (default)   kubernetes.io/gce-pd    Delete          Immediate              true                   92m
+<b>standard-rwo         pd.csi.storage.gke.io   Delete          WaitForFirstConsumer   true                   92m</b>
+</pre>
 If this storageclass is available in both GKE-cluster, we are ready to go.
 
 ## s1_remount.sh
