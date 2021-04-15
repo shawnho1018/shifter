@@ -21,7 +21,6 @@ This script will step-by-step demonstrate how to detach-and-mount a PV into a ne
 2. A file will be copy into the persistent volume for further validation.
 3. Patch the persistent volume to have persistentVolumeReclaimPolicy=Retain.
 4. Delete pod-s and its corresponding pvc
----
 5. Switch to second cluster and create the same namespace
 6. Create a PV to utilize the detached persistent volume
 7. Create a new pod-d with pvc, which refers to the PV in step 6. 
@@ -33,15 +32,15 @@ This script demonstrates how to use VolumeSnapshot mechanism to snapshot persist
 ### Pre-requisite
 1. Copy and paste both clusters context into context1 and context2.
 ### Execute s2-volumesnapshot.sh
-2. Switch to source cluster.
-3. Create a pod with persistent disk and then copy an yaml file into the pod for further validation.
-4. Specify VolumeSnapshotClass and then perform VolumeSnapshot on the source cluster.
-5. Wait the cloned persistent volume ready and then patch it to have persistentVolumeReclaimPolicy="Retain" and then .  
-6. Switch to target cluster
-7. Create a PV to utilize the detached persistent volume
-8. Create a new pod-d with pvc, which refers to the PV in step 7.
-9. Validate the file, copied from step 3, is successfully mounted to pod-d.
-10. Clean both environments...
+1. Switch to source cluster.
+2. Create a pod with persistent disk and then copy an yaml file into the pod for further validation.
+3. Specify VolumeSnapshotClass and then perform VolumeSnapshot on the source cluster.
+4. Wait the cloned persistent volume ready and then patch it to have persistentVolumeReclaimPolicy="Retain" and then .  
+5. Switch to target cluster
+6. Create a PV to utilize the detached persistent volume
+7. Create a new pod-d with pvc, which refers to the PV in step 7.
+8. Validate the file, copied from step 3, is successfully mounted to pod-d.
+9. Clean both environments...
 
 ## s3-velero.sh
 Demonstrate how to use OSS velero to backup/restore persistent volume between two separate clusters.    
