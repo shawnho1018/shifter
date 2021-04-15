@@ -14,7 +14,8 @@ If this storageclass is available in both GKE-cluster, we are ready to go.
 
 ## s1_remount.sh
 This script will step-by-step demonstrate how to detach-and-mount a PV into a new GKE cluster. The detailed steps are explained below:  
-### Copy and paste both clusters context into context1 and context2.
+### Pre-requisite
+1. Copy and paste both clusters context into context1 and context2.
 ### Execute s1-remount.sh
 1. A pod-s with a PVC will be created in the test namespace of context1 cluster. 
 2. A file will be copy into the persistent volume for further validation.
@@ -28,6 +29,34 @@ This script will step-by-step demonstrate how to detach-and-mount a PV into a ne
 9. Clean both environments...
 
 ## s2-volumesnapshot.sh
-### Copy and paste both clusters context into context1 and context2.
+This script demonstrates how to use VolumeSnapshot mechanism to snapshot persistent volume with CSI driver; then detach-and-mount the snapshot onto the target cluster.
+### Pre-requisite
+1. Copy and paste both clusters context into context1 and context2.
 ### Execute s2-volumesnapshot.sh
-   
+2. Switch to source cluster.
+3. Create a pod with persistent disk and then copy an yaml file into the pod for further validation.
+4. Specify VolumeSnapshotClass and then perform VolumeSnapshot on the source cluster.
+5. Wait the cloned persistent volume ready and then patch it to have persistentVolumeReclaimPolicy="Retain" and then .  
+6. Switch to target cluster
+7. Create a PV to utilize the detached persistent volume
+8. Create a new pod-d with pvc, which refers to the PV in step 7.
+9. Validate the file, copied from step 3, is successfully mounted to pod-d.
+10. Clean both environments...
+
+## s3-velero.sh
+Demonstrate how to use OSS velero to backup/restore persistent volume between two separate clusters.    
+### Pre-requisite
+1. Copy and paste both clusters context into context1 and context2.
+2. Provide desired bucket-name.
+3. Provide the file path to store keyfile of the service account. 
+### Execute s3-velero.sh
+1. Create corresponding GCS (Google Cloud Storage) bucket and build the correponding service account with sufficient privilege. Then, generate the service account key into the filepath, specified by SERVICE_KEY_FILE.
+2. Install Velero in both source and target clusters.
+---
+3. Switch to source cluster.
+4. Create pod with Persistent Volume. Then, copy an yaml file into the pod for later checking.
+5. Perform velero backup in the source cluster.
+6. Switch to the target cluster and perform restore action. 
+7. Check if the restored pod contains the file, copied into the pod in step 4.
+---
+8. Clean all the environments.
