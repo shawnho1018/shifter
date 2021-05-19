@@ -14,21 +14,17 @@ limitations under the license.
 package generator
 
 import (
-	//"encoding/json"
-	"fmt"
-	//runtime "k8s.io/apimachinery/pkg/runtime"
-	k8sjson "k8s.io/apimachinery/pkg/runtime/serializer/json"
-	"os"
-	//"log"
 	"bufio"
+	"fmt"
+	k8sjson "k8s.io/apimachinery/pkg/runtime/serializer/json"
 	"log"
+	"os"
 	"path/filepath"
 	"shifter/lib"
 	"strconv"
 )
 
 func Yaml(path string, objects []lib.K8sobject) {
-
 	// Create our output folder
 	outPath := filepath.Clean(path)
 	if filepath.Ext(outPath) == ".yaml" || filepath.Ext(outPath) == ".yml" {

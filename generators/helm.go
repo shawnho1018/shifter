@@ -132,10 +132,10 @@ func genValues(parameters lib.Kube, path string) {
 	}
 }
 
-func Helm(path string, input lib.Kube) {
+func Helm(path string, objects []lib.K8sobject) {
 	createFolderStruct(path)
 
-	genTemplate(input, path)
-	genValues(input, path)
+	genTemplate(objects, path)
+	genValues(objects, path)
 	genChart(path)
 }

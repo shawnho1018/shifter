@@ -35,7 +35,6 @@ apply:
 
 # Tests
 # ---------------
-
 helmlint:
 	helm lint ./out
 
@@ -53,6 +52,10 @@ yamlDCTest: fmt
 
 yamlQNSTest: fmt
 	go run . convert -t yaml -i yaml -f ./_test/yaml/quoted_nested_strings.yaml -o ./out/quoted_nested_strings.yaml
+
+helm: yamlMultiHelmTest
+yamlMultiHelmTest: fmt
+	go run . convert -t helm -f ./_test/yaml/multifile/ -o ./out/files -i yaml
 
 templateTest:
 	go run . convert -t template -f ./_test/os-nginx-template.yaml -o ./out/helm -k helm
