@@ -17,7 +17,6 @@ import (
 	osroutev1 "github.com/openshift/api/route/v1"
 	v1beta1 "k8s.io/api/extensions/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
 func convertRouteToIngress(OSRoute osroutev1.Route, flags map[string]string) v1beta1.Ingress {
@@ -57,7 +56,7 @@ func convertRouteToIngress(OSRoute osroutev1.Route, flags map[string]string) v1b
 		ingressPath.Path = "/"
 	}
 
-	ingressPath.Backend.ServicePort = intstr.FromString(OSRoute.Spec.To.Name)
+	ingressPath.Backend.ServicePort = OSRoute.Spec.Port.TargetPort
 	ingressPath.Backend.ServiceName = OSRoute.Spec.To.Name
 
 	httpIngressRuleValue.Paths = append(httpIngressRuleValue.Paths, ingressPath)
