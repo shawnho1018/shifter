@@ -1,0 +1,13 @@
+steps:
+- name: golang
+  args: ['make', 'test']
+  waitFor: ['-']
+- name: golang
+  env:
+  - 'GOOS=linux'
+  - 'GOARCH=amd64'
+  args: ['make', 'build']
+artifacts:
+  objects:
+    location: gs://shifter-builds
+    paths: ['shifter_*']

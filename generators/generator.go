@@ -14,17 +14,17 @@ limitations under the license.
 package generator
 
 import (
-	//"errors"
 	"fmt"
-	runtime "k8s.io/apimachinery/pkg/runtime"
-	k8sjson "k8s.io/apimachinery/pkg/runtime/serializer/json"
 	"os"
+
+	"github.com/garybowers/shifter/lib"
+	k8sjson "k8s.io/apimachinery/pkg/runtime/serializer/json"
 )
 
-func serializer(input runtime.Object) {
+func serializer(input lib.K8sobject) {
 	e := k8sjson.NewYAMLSerializer(k8sjson.DefaultMetaFactory, nil, nil)
 
-	err := e.Encode(input, os.Stdout)
+	err := e.Encode(input.Object, os.Stdout)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -33,6 +33,6 @@ func serializer(input runtime.Object) {
 
 func createFolder(path string) {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
-		os.Mkdir(path, 0700)
+		os.MkdirAll(path, 0700)
 	}
 }

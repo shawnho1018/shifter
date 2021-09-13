@@ -14,42 +14,67 @@ limitations under the license.
 package generator
 
 import (
-	//"encoding/json"
-	"fmt"
-	runtime "k8s.io/apimachinery/pkg/runtime"
-	k8sjson "k8s.io/apimachinery/pkg/runtime/serializer/json"
-	"os"
-	//"log"
 	"bufio"
+	"fmt"
 	"log"
+	"os"
+	"path/filepath"
 	"strconv"
+
+	"github.com/garybowers/shifter/lib"
+	k8sjson "k8s.io/apimachinery/pkg/runtime/serializer/json"
 )
 
-func Yaml(path string, objects []runtime.Object) {
-
+func Yaml(path string, objects []lib.K8sobject) {
 	// Create our output folder
-	createFolder(path)
-
-	// Iterate over our objects to write out
-	for k, v := range objects {
-		//fmt.Println(k, v)
-		no := strconv.Itoa(k)
-		f, err := os.Create(path + "/" + no + ".yaml")
+	outPath := filepath.Clean(path)
+	if filepath.Ext(outPath) == ".yaml" || filepath.Ext(outPath) == ".yml" {
+		log.Println("Creating multidoc file", outPath)
+		createFolder(filepath.Dir(outPath))
+		_, err := os.Create(outPath)
 		if err != nil {
 			fmt.Println(err)
 		}
 
-		log.Println("Creating file ", f.Name())
+		for _, v := range objects {
+			f, err := os.OpenFile(outPath, os.O_RDWR|os.O_APPEND, 0666)
+			if err != nil {
+				log.Println(err)
+			}
+			w := bufio.NewWriter(f)
+			defer f.Close()
 
-		defer f.Close()
-
-		w := bufio.NewWriter(f)
-
-		e := k8sjson.NewYAMLSerializer(k8sjson.DefaultMetaFactory, nil, nil)
-		err = e.Encode(v, w)
-		if err != nil {
-			fmt.Println(err)
+			fmt.Fprintln(w, "---")
+			e := k8sjson.NewYAMLSerializer(k8sjson.DefaultMetaFactory, nil, nil)
+			err = e.Encode(v.Object, w)
+			if err != nil {
+				fmt.Println(err)
+			}
+			w.Flush()
 		}
-		w.Flush()
+
+	} else {
+		createFolder(outPath)
+		// Iterate over our objects to write out
+		for k, v := range objects {
+			no := strconv.Itoa(k)
+			kind := fmt.Sprintf("%v", v.Kind)
+
+			f, err := os.Create(outPath + "/" + no + "-" + kind + ".yaml")
+			if err != nil {
+				fmt.Println(err)
+			}
+			defer f.Close()
+
+			log.Println("Creating file", f.Name())
+			w := bufio.NewWriter(f)
+			e := k8sjson.NewYAMLSerializer(k8sjson.DefaultMetaFactory, nil, nil)
+			err = e.Encode(v.Object, w)
+			if err != nil {
+				fmt.Println(err)
+			}
+			w.Flush()
+		}
 	}
+	log.Println("Conversion completed")
 }

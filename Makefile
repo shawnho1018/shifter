@@ -12,17 +12,20 @@
 
 .PHONY: test lint templateTest clean build apply
 
-
-
-test: yamlTest yamlMultiTest
-
-lint:
-	helm lint ./out
+test: yamlTest yamlMultiTest yamlDCTest yamlMultiOutputSingleTest yamlQNSTest
 
 clean:
 
-build: fmt
-	env GOOS=linux go build --ldflags '-linkmode external -extldflags "-static"' -v shifter 
+build: shifter_linux_amd64 shifter_darwin_amd64 shifter_win_amd64.exe
+
+shifter_linux_amd64: fmt
+	env GOOS=linux GOARCH=amd64 go build --ldflags '-linkmode external -extldflags "-static"' -o $@ -v shifter
+
+shifter_darwin_amd64: fmt
+	env GOOS=darwin GOARCH=amd64 go build -o $@ -v shifter
+
+shifter_win_amd64.exe: fmt
+	env GOOS=windows GOARCH=amd64 go build -o $@ -v shifter
 
 fmt:
 	go fmt ./...
@@ -32,12 +35,27 @@ apply:
 
 # Tests
 # ---------------
+helmlint:
+	helm lint ./out
 
 yamlTest: fmt
-	go run . convert -t yaml -i ./_test/yaml/multidoc/os-nginx.yaml -o ./out -k yaml
+	go run . convert -t yaml -f ./_test/yaml/multidoc/os-nginx.yaml -o ./out -i yaml
 
 yamlMultiTest: fmt
-	go run . convert -t yaml -i ./_test/yaml/multifile/ -o ./out/files -k yaml
+	go run . convert -t yaml -f ./_test/yaml/multifile/ -o ./out/files -i yaml
+
+yamlMultiOutputSingleTest: fmt
+	go run . convert -t yaml -f ./_test/yaml/multifile/ -o ./out/files.yaml -i yaml
+
+yamlDCTest: fmt
+	go run . convert -t yaml -i yaml -f ./_test/yaml/deploymentconfig.yaml -o ./out/dc
+
+yamlQNSTest: fmt
+	go run . convert -t yaml -i yaml -f ./_test/yaml/quoted_nested_strings.yaml -o ./out/quoted_nested_strings.yaml
+
+helm: yamlMultiHelmTest
+yamlMultiHelmTest: fmt
+	go run . convert -t helm -f ./_test/yaml/multifile/ -o ./out/files -i yaml
 
 templateTest:
-	go run . convert -t template -i ./_test/os-nginx-template.yaml -o ./out -k helm
+	go run . convert -t template -f ./_test/os-nginx-template.yaml -o ./out/helm -k helm

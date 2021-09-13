@@ -15,8 +15,9 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"os"
+
+	"github.com/spf13/cobra"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
@@ -27,7 +28,15 @@ var cfgFile string
 var rootCmd = &cobra.Command{
 	Use:   "shifter",
 	Short: "Move your workloads from Openshift to Kubernetes",
-	Long:  `Shifter is a tool to easily migrate OpenShift workloads to Kubernetes.`,
+	Long: `
+   _____ __    _ ______           
+  / ___// /_  (_) __/ /____  _____
+  \__ \/ __ \/ / /_/ __/ _ \/ ___/
+ ___/ / / / / / __/ /_/  __/ /    
+/____/_/ /_/_/_/  \__/\___/_/     
+                                               
+
+Migrate your OpenShift resources to GKE/Anthos`,
 }
 
 func Execute() {
